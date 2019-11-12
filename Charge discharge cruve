@@ -23,6 +23,8 @@ def graph(file):
         plt.figure(3)
         plt.scatter(D[1], D['absolute'], marker='o', label = file)
         plt.legend(framealpha=1, frameon=True);
+        plt.xlabel('time (s)', fontsize=12)
+        plt.ylabel('voltage (V)', fontsize=12)
     else:
         plt.figure(3)
         plt.scatter(D[1], D[2], marker='o', label = file)
