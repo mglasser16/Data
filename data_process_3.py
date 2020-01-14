@@ -8,8 +8,9 @@ import os
 
 carb_area=(9**2)*np.pi #in mm^2
 carb_v =  carb_area*0.19 #in mm^3
-carb_den = 0.44*.001 #in/mm^3
-carb_m=carb_v*carb_den
+carb_den = 0.44*.001 #in g/mm^3
+carb_por = 0.78 #percentage
+carb_m=carb_v*carb_den*carb_por
 
 def graph(file):
     D = pd.read_table(file, sep='deliminator', engine='python', header=None)
@@ -25,7 +26,7 @@ def graph(file):
     
 
 
-    D['capacity'] = D[1] * abs(D[3])/carb_m
+    D['capacity'] = D[1] * abs(D[3])/carb_m*1000/3600 #convert to mAh/g
     title = file.split("Data/")
     title2 = title[1]
     
@@ -38,26 +39,28 @@ def graph(file):
             break
    
     D[2] =D[2].where(D[2]<=D.iloc[0,2]) 
-    print(D[2])
             
-    if D.iloc[1,2] < 0:
-        D['absolute'] = D[2]*-1
-        plt.figure(3)
-        plt.scatter(D[1], D['absolute'], marker='o', label = title2)
-        plt.legend(framealpha=1, frameon=True);
-        plt.xlabel('time (s)', fontsize=12)
-        plt.ylabel('voltage (V)', fontsize=12)
-    else:
-        plt.figure(3)
-        plt.scatter(D[1], D[2], marker='o', label = title2)
-        plt.scatter(D[1], D['adjust'], marker='o', label = title2)
-        plt.legend(framealpha=1, frameon=True);
-        plt.xlabel('time (s)', fontsize=12)
-        plt.ylabel('voltage (V)', fontsize=12)
+# =============================================================================
+#     if D.iloc[1,2] < 0:
+#         D['absolute'] = D[2]*-1
+#         plt.figure(3)
+#         plt.scatter(D[1], D['absolute'], marker='o', label = title2)
+#         plt.legend(framealpha=1, frameon=True);
+#         plt.xlabel('time (s)', fontsize=12)
+#         plt.ylabel('voltage (V)', fontsize=12)
+#     else:
+#         plt.figure(3)
+#         plt.scatter(D[1], D[2], marker='o', label = title2)
+#         plt.scatter(D[1], D['adjust'], marker='o', label = title2)
+#         plt.legend(framealpha=1, frameon=True);
+#         plt.xlabel('time (s)', fontsize=12)
+#         plt.ylabel('voltage (V)', fontsize=12)
+# =============================================================================
         
     plt.figure(0)
     plt.scatter(D['capacity'], D[2], marker='o', label = title2)
-    plt.xlabel('Capacity (A/g)', fontsize=12)
+    plt.scatter(D['capacity'], D['adjust'], marker='o', label = title2)
+    plt.xlabel('Capacity (mAh/g)', fontsize=12)
     plt.ylabel('voltage (V)', fontsize=12)
     plt.legend(framealpha=1, frameon=True);
 #    plt.figure(1)
@@ -67,6 +70,6 @@ def graph(file):
 
 path = 'C:/Users/Amy LeBar/Documents/Data'
 for file in os.listdir('C:/Users/Amy LeBar/Documents/Data'):
-    if file.find('20191213_c001') > -1:
+    if file.find('20191213_c0003') > -1:
         graph(path + "/"+ file)
 
