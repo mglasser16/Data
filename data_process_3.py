@@ -27,7 +27,7 @@ def graph(file):
 
 
     D['capacity'] = D[1] * abs(D[3])/carb_m*1000/3600 #convert to mAh/g
-    title = file.split("Data/")
+    title = file.split("_cycle")
     title2 = title[1]
     
     for cell in D[2]:
@@ -35,10 +35,10 @@ def graph(file):
             row = list(D[2]).index(cell)
             newc=D.iloc[row:,2]
             D['adjust']=newc
-            D['adjust']=D['adjust'].shift(-1*row)
+            D['charge']=D['adjust'].shift(-1*row)
             break
    
-    D[2] =D[2].where(D[2]<=D.iloc[0,2]) 
+    D['discharge'] =D[2].where(D[2]<=D.iloc[0,2]) 
             
 # =============================================================================
 #     if D.iloc[1,2] < 0:
@@ -58,18 +58,44 @@ def graph(file):
 # =============================================================================
         
     plt.figure(0)
-    plt.scatter(D['capacity'], D[2], marker='o', label = title2)
-    plt.scatter(D['capacity'], D['adjust'], marker='o', label = title2)
+    plt.scatter(D['capacity'], D['charge'], marker='o', label = title2 +"charge")
+    plt.scatter(D['capacity'], D['discharge'], marker='o', label = title2 +"discharge")
     plt.xlabel('Capacity (mAh/g)', fontsize=12)
     plt.ylabel('voltage (V)', fontsize=12)
     plt.legend(framealpha=1, frameon=True);
+    
+    
+    D['Voltgap'] = D['charge'] -D['discharge']
+    
+    Voltgap = D.Voltgap.mean()
+    Voltgap2 = 5
+    return [Voltgap, Voltgap2]
+    plt.scatter(D['capacity'], D['Voltgap'], marker='o', label = title2)
 #    plt.figure(1)
 #    plt.scatter(D[1], D[3], marker='o')
 #    plt.xlabel('time (s)', fontsize=12)
 #    plt.ylabel('current (A)', fontsize=12)
 
 path = 'C:/Users/Amy LeBar/Documents/Data'
+
+i=0
+iform =[]
+V = []
+V2 = []
+
 for file in os.listdir('C:/Users/Amy LeBar/Documents/Data'):
-    if file.find('20191213_c0003') > -1:
-        graph(path + "/"+ file)
+    if file.find('08012019') > -1:
+        Voltgap =graph(path + "/"+ file)
+        print(Voltgap)
+        V.append(Voltgap[0])
+        V2.append(Voltgap[1])
+        iform.append(i)
+        i=i+1
+   
+    
+Report = pd.DataFrame()  
+Report['V1'] = V
+Report['V2'] = V2
+plt.figure(1)
+plt.scatter(iform, Report['V1'], marker='o')
 
