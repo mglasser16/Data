@@ -56,12 +56,11 @@ def graph(file):
 # =============================================================================
 
     plt.figure(0)
-    plt.scatter(D['capacity'], D['charge'], marker='o', label = title2 +"charge")
-    plt.scatter(D['capacity'], D['discharge'], marker='o', label = title2 +"discharge")
+    plt.plot(D['capacity'], D['charge'], label = title2 +"charge")
+    plt.plot(D['capacity'], D['discharge'],  label = title2 +"discharge")
     plt.xlabel('Capacity (mAh/g)', fontsize=12)
     plt.ylabel('voltage (V)', fontsize=12)
-    plt.legend(framealpha=1, frameon=False);
-
+    plt.legend(loc='upper center', bbox_to_anchor=(1.45, 0.8), shadow=True, ncol=1)
 
     D['Voltgap'] = D['charge'] -D['discharge']
 
