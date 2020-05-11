@@ -50,7 +50,7 @@ r = np.empty([0])
 nuc = [constants['n_0']]
 N_tot =[constants['n_0']]
 
-#ODE solver sundials
+#Growth case
 #%%
 
 def func(t,varbs_array):
@@ -63,6 +63,8 @@ sol = solve_ivp(func, timespan, prop_0)
 radius = sol.y[0]
 t = sol.t
 plt.plot(t,radius)
+
+#nuc and growth
 #%%
 
 def func2(t,varbs_array2):
@@ -85,11 +87,20 @@ theta2 = sol2.y[2]
 time2 =sol2.t
 print(theta2)
 #%%
-mass = []
-print (mass)
+mass = np.zeros(len(time2))
+
+#%%
+
 for tim in range(len(time2)):
-    mass[tim] = theta2[tim]
-    print(mass)
+    if tim == 0:
+        continue
+    else:
+        mass [tim]= sum((m.pi*2/3*den*(radius2[0:tim]**3))*nucl2[0:tim])
+        print (mass)
+
+
+    # mass[tim] = theta2[tim]
+    # print(mass)
 
 
 # for t in np.arange(time/dt):
